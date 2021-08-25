@@ -4,6 +4,7 @@ output/
 submission/
 resources/
 *.pdf
+.directory
 
 .vscode/
 # Byte-compiled / optimized / DLL files
