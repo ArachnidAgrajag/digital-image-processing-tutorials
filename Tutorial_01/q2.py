@@ -4,8 +4,8 @@ from PIL import Image
 import numpy as np
 
 # Open both images and convert to array
-img1 = np.array(Image.open("image1.jpg"))
-img2 = np.array(Image.open("image2.jpg"))
+img1 = np.array(Image.open("input/image1.jpg"))
+img2 = np.array(Image.open("input/image2.jpg"))
 # proceed if the images have the same resolution
 if img1.shape == img2.shape:
     # split both images into RBG channel
