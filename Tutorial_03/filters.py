@@ -36,27 +36,44 @@ def apply_filter(image, filter, stride):
     return image_op.astype(np.uint8)
 
 
+def guassian_filter(m, n, k, sig):
+    guassian = np.zeros(m, n)
+    for (s, t), val in np.nditer(guassian):
+        guassian[s][t] = k * np.exp(-(s**2 + t**2)/(2*sig**2))
+    return guassian
+
+
 def main():
     name = "cat_bw"
     image = np.array(Image.open("input/{}.jpg".format(name)).convert('L'))
-    # list of filters
+    # # list of filters
     f = {}
-    f[1] = np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
+    # f[1] = np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
     f[2] = np.zeros((3, 3))
     f[2].fill(1)
     f[2] = f[2]/9
-    f[3] = np.array([[0, 0, 0], [1, 0, 0], [0, 0, 0]])
-    f[4] = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
-    f[5] = (2*f[1]) - f[2]
-    for i, filter in f.items():
-        # for each filter, stride is varied from 1 to 5
-        for s in range(1, 6):
-            img_name = "output_f/{}_f{}_s{}.jpg".format(name, i, s)
-            print("Processing " + img_name)
-            img_f = apply_filter(image, filter, s)
-            print("Writing " + img_name)
-            Image.fromarray(img_f).save(img_name, "jpeg")
-            print("Done")
+    # f[3] = np.array([[0, 0, 0], [1, 0, 0], [0, 0, 0]])
+    # f[4] = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    # f[5] = (2*f[1]) - f[2]
+    guassian = np.array([[0.3679, 0.6065, 0.3679],
+                         [0.6065, 1, 0.6065],
+                         [0.3679, 0.6065, 0.3679]])
+    guassian = guassian/4.8976
+    # for i, filter in f.items():
+    #     # for each filter, stride is varied from 1 to 5
+    #     for s in range(1, 6):
+    #         img_name = "output_f/{}_f{}_s{}.jpg".format(name, i, s)
+    #         print("Processing " + img_name)
+    #         img_f = apply_filter(image, filter, s)
+    #         print("Writing " + img_name)
+    #         Image.fromarray(img_f).save(img_name, "jpeg")
+    #         print("Done")
+    img_name = "output/{}_guass.jpg".format(name)
+    img_f = apply_filter(image, guassian, 1)
+    Image.fromarray(img_f).save(img_name, "jpeg")
+    img_name = "output/{}_box.jpg".format(name)
+    img_f = apply_filter(image, f[2], 1)
+    Image.fromarray(img_f).save(img_name, "jpeg")
     print("All done!")
 
 
