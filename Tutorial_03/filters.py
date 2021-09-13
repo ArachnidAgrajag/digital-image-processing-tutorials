@@ -12,27 +12,26 @@ def bnd(x, p=0, q=255):
     else:
         return x
 
-
-def calc(img, ftr, image_op, m, n, x, y, i, j, p, q):
+def calc(img, ftr, image_op, m, n, x, y, i, j):
     # performs the operation on the given pixel
     # for the top right pixel the bottom left part of the filter is used
     # centers always line up
-    v = ftr[p+int(x/2)-i][q+int(y/2)-j]*img[bnd(p, 0, m-1)][bnd(q, 0, n-1)]
-    image_op[bnd(p, 0, m-1)][bnd(q, 0, n-1)] += v
-    image_op[bnd(p, 0, m-1)][bnd(q, 0, n-1)] /= 2
+    # p and q are the neighbouring pixels
+    v=0
+    for p in range(i-int(x/2),  i+int(x/2)+1):
+        for q in range(j-int(y/2),  j+int(y/2)+1):
+            v += ftr[p+int(x/2)-i][q+int(y/2)-j]*img[bnd(p, 0, m-1)][bnd(q, 0, n-1)]
+    return v
 
 
-def apply_filter(image, filter, stride):
+def apply_filter(image, filter, stride=1):
     (m, n) = image.shape
     image_op = np.zeros((m, n))
     (x, y) = filter.shape
     # i and j is the center pixel
     for i in range(0, m, stride):
         for j in range(0, n, stride):
-            # p and q are the neighbouring pixels
-            for p in range(i-int(x/2),  i+int(x/2)+1):
-                for q in range(j-int(y/2),  j+int(y/2)+1):
-                    calc(image, filter, image_op, m, n, x, y, i, j, p, q)
+            image_op[i][j]= calc(image, filter, image_op, m, n, x, y, i, j)
     return image_op.astype(np.uint8)
 
 
